@@ -1,5 +1,6 @@
 # Chip8-CPP
 Chip8 emulator built in c++
+Tutoial can be found [here](https://austinmorlan.com/posts/chip8_emulator)
 
 ## Chip8 Specification
 - 16x 8-bit general purpose registers

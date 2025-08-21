@@ -1,12 +1,17 @@
 #include "Chip8.h"
 #include <fstream>  // File operations
 
-// Set the start address for the PC, 0x000 to 0x1FF are reserved
-const unsigned int START_ADDR = 0x200;
+const unsigned int START_ADDR = 0x200;          // Set the start address for the PC, 0x000 to 0x1FF are reserved
+const unsigned int FONTSET_START_ADDR = 0x50;   // Set the start address for where the font is stored
 
 /* ------------------------- CONSTRUCTOR ------------------------- */
 Chip8::Chip8() {
     pc = START_ADDR;  // Set the starting address of the Chip8 to 0x200
+
+    // Load font set into the memory
+    for (unsigned int i = 0; i < FONTSET_SIZE; ++i) {
+        memory[FONTSET_START_ADDR + i] = fontset[i];
+    }
 }
 
 /* ----------------- FUNCTION TO LOAD A ROM FILE ----------------- */
@@ -30,3 +35,36 @@ void Chip8::LoadROM(char const* filename) {
         delete[] buffer;                    // Free the buffer memory
     }
 }
+
+/* --------------------- SET UP FONT DETAILS --------------------- */
+/*
+The font is stored as a sprite. Each character consists of 5 rows of 8 numbers, so 1 byte (5 bytes size).
+Take F for example:
+11110000
+10000000
+11110000
+10000000
+10000000
+The first row is the hex number 0xF0.
+We will store the whole character set using 16 sets of 5 bytes.
+*/
+const unsigned int FONTSET_SIZE = 80;
+uint8_t fontset[FONTSET_SIZE] =
+{
+	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+	0x20, 0x60, 0x20, 0x20, 0x70, // 1
+	0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+	0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+	0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+	0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+	0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+	0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+	0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+	0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+	0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+	0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+	0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+	0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+	0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+	0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+};
