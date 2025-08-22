@@ -1,6 +1,7 @@
 #ifndef CHIP8_H
 #define CHIP8_H
 #include <cstdint>
+#include <random>
 
 class Chip8 {
     public:
@@ -20,6 +21,11 @@ class Chip8 {
         // Methods
         Chip8();                            // Constructor
         void LoadROM(char const* filename); // Method to load a ROM file
+
+    private:
+        // Attributes
+        std::default_random_engine randGen; // Engine to generate a random number
+        std::uniform_int_distribution<uint8_t> randByte;  // Used to store a byte of random data
 };
 
 #endif // CHIP8_H

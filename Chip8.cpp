@@ -1,11 +1,16 @@
 #include "Chip8.h"
 #include <fstream>  // File operations
+#include <chrono>   // Time functions
 
 const unsigned int START_ADDR = 0x200;          // Set the start address for the PC, 0x000 to 0x1FF are reserved
 const unsigned int FONTSET_START_ADDR = 0x50;   // Set the start address for where the font is stored
 
 /* ------------------------- CONSTRUCTOR ------------------------- */
-Chip8::Chip8() {
+Chip8::Chip8()
+// Initialisers
+: randGen(std::chrono::system_clock::now().time_since_epoch().count()),  // Seed the RNG using the current time
+  randByte(0, 255)  // Generate a random num one byte in size (0 to 255)
+{
     pc = START_ADDR;  // Set the starting address of the Chip8 to 0x200
 
     // Load font set into the memory
