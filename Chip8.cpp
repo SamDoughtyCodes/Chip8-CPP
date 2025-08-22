@@ -123,3 +123,85 @@ void Chip8::OP_4xkk() {
         pc += 2;
     }
 }
+
+// 5xy0 -> SE Vx Vy: Skip if Vx == Vy
+void Chip8::OP_5xy0() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    if (registers[Vx] == registers[Vy]) {   // If Vx == Vy
+        pc += 2;                            // Increment the program counter to skip the next step
+    }
+}
+
+// 6xkk -> LD Vx kk: Set Vx == kk
+void Chip8::OP_6xkk() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t byte = opcode & 0x00FFu;        // Extract kk from opcode
+    registers[Vx] = byte;                   // Load byte into register Vx
+}
+
+// 7xkk -> ADD Vx kk: Set Vx += kk
+void Chip8::OP_7xkk() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t byte = opcode & 0x00FFu;        // Extract kk from opcode
+    registers[Vx] += byte;                  // Add kk to the contents of Vx
+}
+
+// 8xy0 -> LD Vx Vy: Set Vx = Vy
+void Chip8::OP_8xy0() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    registers[Vx] = registers[Vy];          // Set Vx = Vy
+}
+
+// 8xy1 -> OR Vx Vy: Set Vx = Vx | Vy
+void Chip8::OP_8xy1() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    registers[Vx] |= registers[Vy];         // |= is shorthand for Vx = Vx | Vy
+}
+
+// 8xy2 -> AND Vx Vy: Set Vx = Vx & Vy
+void Chip8::OP_8xy2() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    registers[Vx] &= registers[Vy];
+}
+
+// 8xy3 -> XOR Vx Vy: Set Vx = Vx ^ Vy
+void Chip8::OP_8xy3() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    registers[Vx] ^= registers[Vy];
+}
+
+// 8xy4 -> ADD Vx Vy; Set Vx += Vy (VF stores overflow)
+void Chip8::OP_8xy4() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    uint16_t sum = registers[Vx] + registers[Vy];  // Sum Vx and Vy
+    if (sum > 255U) {                       // If the result is greater than 1 byte
+        registers[0xF] = 1;                 // Set VF to 1 to represent overflow
+    } else {                                // If the result is less than 1 byte
+        registers[0xF] = 0;                 // Set VF to 0
+    }
+    registers[Vx] = sum & 0xFFu;            // Set Vx to lowest 8 bits of sum
+}
+
+// 8xy5 -> SUB Vx Vy: Set Vx -= Vy (VF stores 1 if Vx > VY)
+void Chip8::OP_8xy5() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    if (registers[Vx] > registers[Vy]) {    // If Vx > Vy
+        registers[0xF] = 1;                 // Set VF to 1
+    } else {
+        registers[0xF] = 0;                 // Set VF to 0
+    }
+}
+
+// 8xy6 -> SHR Vx: Shift right Vx 1 time (LSB to VF)
+void Chip8::OP_8xy6() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    registers[0xF] = registers[Vx] & 0x1u;  // Extract LSB and store in VF
+    registers[Vx] >>= 1;                    // Shorthand for Vx = Vx >> 1
+}

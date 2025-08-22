@@ -34,6 +34,16 @@ class Chip8 {
         void OP_2nnn();                     // OPCODE 2nnn -> CALL addr: Call subroutine at addr nnn
         void OP_3xkk();                     // OPCODE 3xkk -> SE Vx kk: Skip next if Vx (register x) and kk (1 byte of data) are equal
         void OP_4xkk();                     // OPCODE 4xkk -> SNE Vx kk: Skip next if Vx != kk
+        void OP_5xy0();                     // OPCODE 5xy0 -> SE Vx Vy: Skip next if Vx == Vy
+        void OP_6xkk();                     // OPCODE 6xkk -> LD Vx kk: Load Vx with byte kk (set Vx == kk)
+        void OP_7xkk();                     // OPCODE 7xkk -> ADD Vx kk: Add kk to the contents of Vx (set Vx += kk)
+        void OP_8xy0();                     // OPCODE 8xy0 -> LD Vx Vy: Load Vy into Vx (set Vx = Vy)
+        void OP_8xy1();                     // OPCODE 8xy1 -> OR Vx Vy: Set Vx equal to result of Vx OR Vy (Vx = Vx | Vy)
+        void OP_8xy2();                     // OPCODE 8xy2 -> AND Vx Vy: Set Vx = Vx & Vy
+        void OP_8xy3();                     // OPCODE 8xy3 -> XOR Vx Vy: Set Vx = Vx ^ Vy
+        void OP_8xy4();                     // OPCODE 8xy4 -> ADD Vx Vy: Set Vx += Vy, with VF holding any overflow (set to 1).
+        void OP_8xy5();                     // OPCODE 8xy5 -> SUB Vx Vy: Set Vx -= Vy. If Vx > Vy, VF is set to 1
+        void OP_8xy6();                     // OPCODE 8xy6 -> SHR Vx: Shift Vx value right 1 bit, with LSB stored in VF
 };
 
-#endif // CHIP8_H
+#endif
