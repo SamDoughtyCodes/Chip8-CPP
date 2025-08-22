@@ -1,6 +1,7 @@
 #include "Chip8.h"
 #include <fstream>  // File operations
 #include <chrono>   // Time functions
+#include <string.h> // To use memset
 
 const unsigned int START_ADDR = 0x200;          // Set the start address for the PC, 0x000 to 0x1FF are reserved
 const unsigned int FONTSET_START_ADDR = 0x50;   // Set the start address for where the font is stored
@@ -73,3 +74,52 @@ uint8_t fontset[FONTSET_SIZE] =
 	0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 	0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
+
+/* --------------------------- OPCODES --------------------------- */
+// 00E0 -> CLS: Clears the display
+void Chip8::OP_00E0() {
+    memset(video, 0, sizeof(video));    // Sets entire video buffer (display) to 0s
+}
+
+// 00EE -> RET: Returns from a subroutine
+void Chip8::OP_00EE() {
+    --sp;                               // Decrement stack pointer (preparing to pop)
+    pc = stack[sp];                     // Pop contents of stack into program counter
+}
+
+// 1nnn -> JUMP addr: Jumps to addr nnn
+void Chip8::OP_1nnn() {
+    /*
+    NOTE: & performs bitwise AND with mask 0x0FFFu, so for Chip8's 2-byte instructions,
+    it removes the first nible (the instruction type) and keeps the address nibbles (nnn)
+    */
+    uint16_t address = opcode & 0x0FFFu;  // Set the address to jump to
+    pc = address;                         // Replace the program counter value with the address
+}
+
+// 2nnn -> CALL addr: Call subroutine at addr nnn
+void Chip8::OP_2nnn() {
+    uint16_t address = opcode & 0x0FFFu;  // Set the address of the subroutine
+    stack[sp] = pc;                       // Add the current contents of the program counter to the stack
+    ++sp;                                 // Increment the stack pointer
+    pc = address;                         // Set the program counter to the new address
+}
+
+// 3xkk -> SE Vx kk: Skip if Vx == kk
+void Chip8::OP_3xkk() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Find Vx by bitwise AND-ing x from the opcode and bit-shifting 8-bits to the right (to remove leftover 0s from AND)
+    uint8_t byte = opcode & 0x00FFu;        // Extract the byte to compare to (kk)
+    if (registers[Vx] == byte) {            // If Vx == kk
+        pc += 2;                            // Increment PC by 2 (as memory is 1 byte but instructions are 2 bytes)
+    }
+}
+
+// 4xkk -> SNE Vx kk: Skip if Vx != kk
+void Chip8::OP_4xkk() {
+    // See Chip8::OP_3xkk for explanation of code
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+    uint8_t byte = opcode & 0x00FFu;
+    if (registers[Vx] != byte) {
+        pc += 2;
+    }
+}

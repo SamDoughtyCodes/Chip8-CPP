@@ -12,3 +12,7 @@ Tutoial can be found [here](https://austinmorlan.com/posts/chip8_emulator)
 - 8-bit sound timer
 - 16x inputs (corresponding with 0 to F)
 - 64x32 monochrome display
+
+## Opcodes
+The full list of opcodes can be found [here](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM).
+Opcodes are briefly described in the header file `Chip8.h`, to help understand their meaning.
