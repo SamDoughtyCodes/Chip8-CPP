@@ -44,6 +44,12 @@ class Chip8 {
         void OP_8xy4();                     // OPCODE 8xy4 -> ADD Vx Vy: Set Vx += Vy, with VF holding any overflow (set to 1).
         void OP_8xy5();                     // OPCODE 8xy5 -> SUB Vx Vy: Set Vx -= Vy. If Vx > Vy, VF is set to 1
         void OP_8xy6();                     // OPCODE 8xy6 -> SHR Vx: Shift Vx value right 1 bit, with LSB stored in VF
+        void OP_8xy7();                     // OPCODE 8xy7 -> SUBN Vx Vy: Set Vx = Vy -Vx. If Vx < Vy, VF i set to 1
+        void OP_8xyE();                     // OPCODE 8xyE -> SHL Vx: Shift Vx value left 1 bit, with MSB stored in VF
+        void OP_9xy0();                     // OPCODE 9xy0 -> SNE Vx Vy: Skip next if Vx != Vy
+        void OP_Annn();                     // OPCODE Annn -> LD I addr: Set index register to value of nnn
+        void OP_Bnnn();                     // OPCODE Bnnn -> JP V0 addr: Jump to location V0 + nnn
+        void OP_Cxkk();                     // OPCODE Cxkk -> RND Vx kk: Vx = randomByte & kk
 };
 
 #endif

@@ -205,3 +205,50 @@ void Chip8::OP_8xy6() {
     registers[0xF] = registers[Vx] & 0x1u;  // Extract LSB and store in VF
     registers[Vx] >>= 1;                    // Shorthand for Vx = Vx >> 1
 }
+
+// 8xy7 -> SUBN Vx Vy: Vx = Vy-Vx (VF = 1 if Vx < Vy)
+void Chip8::OP_8xy7() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    if (registers[Vx] < registers[Vy]) {    // If Vx < Vy
+        registers[0xF] = 1;                 // Set VF = 1
+    } else {
+        registers[0xF] = 0;
+    }
+    registers[Vx] = registers[Vy] - registers[Vx];
+}
+
+// 8xyE -> SHL Vx: Shift left Vx by 1 bit
+void Chip8::OP_8xyE() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    registers[0xF] = (registers[Vx] & 0x80u) >> 7u;  // Extract MSB from Vx value and store to VF
+    registers[Vx] <<= 1;                    // Shorthand for Vx = Vx << 1
+}
+
+// 9xy0 -> SNE Vx Vy: Skip next if Vx != Vy
+void Chip8::OP_9xy0() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    if (registers[Vx] != registers[Vy]) {   // If Vx != Vy
+        pc += 2;                            // Increment PC by 2, to skip next instruction
+    }
+}
+
+// Annn -> LD I addr: Load I with value nnn
+void Chip8::OP_Annn() {
+    uint16_t address = opcode & 0x0FFFu;    // Extract nnn from opcode
+    index = address;                        // Set the index register with value nnn
+}
+
+// Bnnn -> JP V0 nnn: Jump to location V0 + nnn
+void Chip8::OP_Bnnn() {
+    uint16_t address = opcode & 0x0FFFu;    // Extract nnn from opcode
+    pc = registers[0] + address;            // PC = V0 + nnn
+}
+
+// Cxkk -> RND Vx kk: Set Vx to randomByte & kk
+void Chip8::OP_Cxkk() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t byte = opcode & 0x00FFu;        // Extract kk from opcode
+    registers[Vx] = randByte(randGen) & byte;
+}
