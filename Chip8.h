@@ -50,6 +50,10 @@ class Chip8 {
         void OP_Annn();                     // OPCODE Annn -> LD I addr: Set index register to value of nnn
         void OP_Bnnn();                     // OPCODE Bnnn -> JP V0 addr: Jump to location V0 + nnn
         void OP_Cxkk();                     // OPCODE Cxkk -> RND Vx kk: Vx = randomByte & kk
+        void OP_Dxyn();                     // OPCODE Dxyn -> DRW Vx Vy nibble: Draw sprite of size (data) n, from memory location index, at (Vx, Vy). If there is a collision, VF set to 1.
+        void OP_Ex9E();                     // OPCODE Ex9E -> SKP Vx: Skip next if key of value Vx is pressed
+        void OP_ExA1();                     // OPCODE ExA1 -> SKNP Vx: Skip next if key of value Vx is not pressed
+        void OP_Fx07();                     // OPCODE Fx07 -> LD Vx DT: Set Vx = delayTimer
 };
 
 #endif

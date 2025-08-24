@@ -5,6 +5,8 @@
 
 const unsigned int START_ADDR = 0x200;          // Set the start address for the PC, 0x000 to 0x1FF are reserved
 const unsigned int FONTSET_START_ADDR = 0x50;   // Set the start address for where the font is stored
+const unsigned int VIDEO_HEIGHT = 32;           // Stores height of the display
+const unsigned int VIDEO_WIDTH = 64;            // Stores width of the display
 
 /* ------------------------- CONSTRUCTOR ------------------------- */
 Chip8::Chip8()
@@ -251,4 +253,62 @@ void Chip8::OP_Cxkk() {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
     uint8_t byte = opcode & 0x00FFu;        // Extract kk from opcode
     registers[Vx] = randByte(randGen) & byte;
+}
+
+// Dxyn -> DRW Vx Vy nibble: Draw sprite in index reg, at (Vx,Vy). (Collision? Stored in VF)
+void Chip8::OP_Dxyn() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t Vy = (opcode & 0x00F0u) >> 4u;  // Extract Vy from opcode
+    uint8_t rows = opcode & 0x00Fu;         // Extract n from opcode, this stores the number of rows in the sprite
+
+    // Use mod to wrap the sprite around the page, or just calculate the coordinate positions
+    uint8_t xPos = registers[Vx] % VIDEO_WIDTH;
+    uint8_t yPos = registers[Vy] % VIDEO_HEIGHT;
+
+    registers[0xF] = 0;                     // Set VF to 0, as currently there are no collisions
+
+    /*
+    NOTE: How this all crazy shit works...
+    1 - Use the rows variable to iterate over the rows of the sprite
+    2 - Use spriteByte to store the byte value of the current row (see fontset)
+    3 - Iterate over the collumns of that row, storing the value of each pixel in the spritePixel var. This works by extracting the bit to display from the row's byte
+    4 - Store memory address of display pixel in screenPixel pointer
+    */
+    for (unsigned int row = 0; row < rows; ++row) {  // Iterate over the rows of the sprite
+        uint8_t spriteByte = memory[index + row];    // Get the byte of the current row to display from the index register's current value
+        for (unsigned int col = 0; col < 8; ++col) { // Iterate over the rows of the sprite (all sprites are 8 pixels wide)
+            uint8_t spritePixel = spriteByte & (0x80u >> col);  // Fancy bit-shifing/masking to get the right bit to display
+            uint32_t* screenPixel = &video[((yPos + row) * VIDEO_WIDTH) + (xPos + col)];  // Fancy maths to get to the display pixel of the current bit. Pointer explained in above doc-comment (BP4)
+            if (spritePixel) {                       // If value of pixel needs to be 1 (on)
+                if (*screenPixel == 0xFFFFFFFF) {    // If the value of the pixel is already 1 (condition)
+                    registers[0xF] = 1;              // Set VF to 1 to indicate a collision
+                }
+                *screenPixel ^= 0xFFFFFFFF;          // XOR the display's pixel
+            }
+        }
+    }
+}
+
+// Ex9E -> SKP Vx: Skip next if key of value Vx is pressed
+void Chip8::OP_Ex9E() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t key = registers[Vx];            // Get the value of the key to check
+    if (keypad[key]) {                      // If the keypad key is pressed
+        pc += 2;                            // Increment PC by 2 to skip next instruction
+    }
+}
+
+// ExA1 -> SKNP Vx: Skip next if key of value Vx is NOT pressed
+void Chip8::OP_ExA1() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    uint8_t key = registers[Vx];            // Get the value of the key to check
+    if (!keypad[key]) {                     // If the keypad key is NOT pressed
+        pc += 2;                            // Increment PC by 2 to skip next instruction
+    }
+}
+
+// Fx07 -> LD Vx DT: Set Vx = delayTimer
+void Chip8::OP_Fx07() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
+    registers[Vx] = delayTimer;             // Set Vx = delayTimer
 }
