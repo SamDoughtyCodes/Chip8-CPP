@@ -54,6 +54,9 @@ class Chip8 {
         void OP_Ex9E();                     // OPCODE Ex9E -> SKP Vx: Skip next if key of value Vx is pressed
         void OP_ExA1();                     // OPCODE ExA1 -> SKNP Vx: Skip next if key of value Vx is not pressed
         void OP_Fx07();                     // OPCODE Fx07 -> LD Vx DT: Set Vx = delayTimer
+        void OP_Fx0A();                     // OPCODE Fx0A -> LD Vx: Wait for a keypress and then store the value of that key in Vx
+        void OP_Fx15();                     // OPCODE Fx15 -> LD DT Vx: Set delay timer = Vx
+        void OP_Fx18();                     // OPCODE Fx18 -> LD ST Vx: Set sount timer = Vx
 };
 
 #endif

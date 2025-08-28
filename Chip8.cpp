@@ -312,3 +312,89 @@ void Chip8::OP_Fx07() {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;  // Extract Vx from opcode
     registers[Vx] = delayTimer;             // Set Vx = delayTimer
 }
+
+// Fx0A -> LD Vx: Set Vx to the value of the keypress, wait for the keypress
+void Chip8::OP_Fx0A() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+
+	if (keypad[0])
+	{
+		registers[Vx] = 0;
+	}
+	else if (keypad[1])
+	{
+		registers[Vx] = 1;
+	}
+	else if (keypad[2])
+	{
+		registers[Vx] = 2;
+	}
+	else if (keypad[3])
+	{
+		registers[Vx] = 3;
+	}
+	else if (keypad[4])
+	{
+		registers[Vx] = 4;
+	}
+	else if (keypad[5])
+	{
+		registers[Vx] = 5;
+	}
+	else if (keypad[6])
+	{
+		registers[Vx] = 6;
+	}
+	else if (keypad[7])
+	{
+		registers[Vx] = 7;
+	}
+	else if (keypad[8])
+	{
+		registers[Vx] = 8;
+	}
+	else if (keypad[9])
+	{
+		registers[Vx] = 9;
+	}
+	else if (keypad[10])
+	{
+		registers[Vx] = 10;
+	}
+	else if (keypad[11])
+	{
+		registers[Vx] = 11;
+	}
+	else if (keypad[12])
+	{
+		registers[Vx] = 12;
+	}
+	else if (keypad[13])
+	{
+		registers[Vx] = 13;
+	}
+	else if (keypad[14])
+	{
+		registers[Vx] = 14;
+	}
+	else if (keypad[15])
+	{
+		registers[Vx] = 15;
+	}
+	else
+	{
+		pc -= 2;                                // Decreent the PC to stop the next instruction from execiting (emulate a "wait" for a keypress)
+	}
+}
+
+// Fx15 -> LD DT Vx: Set delay timer = Vx
+void Chip8::OP_Fx15() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    delayTimer = registers[Vx];                 // Set delay timer to Vx contents
+}
+
+// Fx18 -> LD ST Vx: Set sound timer = Vx
+void Chip8::OP_Fx18() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    soundTimer = registers[Vx];                 // Set sound timer to Vx contents
+}
