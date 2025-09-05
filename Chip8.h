@@ -57,6 +57,10 @@ class Chip8 {
         void OP_Fx0A();                     // OPCODE Fx0A -> LD Vx: Wait for a keypress and then store the value of that key in Vx
         void OP_Fx15();                     // OPCODE Fx15 -> LD DT Vx: Set delay timer = Vx
         void OP_Fx18();                     // OPCODE Fx18 -> LD ST Vx: Set sount timer = Vx
+        void OP_Fx1E();                     // OPCODE Fx1E -> ADD I Vx: Add the contents of Vx to the index register
+        void OP_Fx29();                     // OPCODE Fx29 -> LD F Vx: Load memory address of first pixel of sprite of value of Vx (grammatical nightmare but hopefully makes sense)
+        void OP_Fx33();                     // OPCODE Fx33 -> LD B Vx: Store the BCD (Binary Coded Decimal) value from Vx within addresses I, I+1, I+2
+        void OP_Fx55();                     // OPCODE Fx55 -> LD I Vx: Store registers V0 to Vx in contiguous memory (starting at index reg location)
 };
 
 #endif

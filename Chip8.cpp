@@ -398,3 +398,46 @@ void Chip8::OP_Fx18() {
     uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
     soundTimer = registers[Vx];                 // Set sound timer to Vx contents
 }
+
+// Fx1E -> ADD I Vx: Add Vx to index reg.
+void Chip8::OP_Fx1E() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    index += registers[Vx];                     // Add Vx to index register
+}
+
+// Fx29 -> LD F Vx: Load starting address of sprite in Vx to index reg.
+void Chip8::OP_Fx29() {
+    /* NOTE:
+    This is a bit of a weird opcode, so I shall try to explain it:
+    1 - The fontset is stored starting from memory address 0x50, and each sprite is 5 bytes long
+    2 - We find the digit stored in register Vx
+    3 - We use the FONTSET_START_ADDRESS const to find the starting address of the sprite
+    4 - We load this address into th eindex register
+    */
+   uint8_t Vx = (opcode & 0x0F00u) >> 8u;       // Extract Vx from opcode
+   uint8_t digit = registers[Vx];               // Store value of reg Vx
+   index = FONTSET_START_ADDR + (5 * digit);    // Find starting address of digit and store in index
+}
+
+// Fx33 -> LD B Vx: Load BCD value of Vx into index (I), I+1 and I+2 respectively
+void Chip8::OP_Fx33() {
+    /* NOTE:
+    If you are at all like me when I first saw this, you might be asking, what the hell is a BCD value?????
+    BCD (Binary Coded Decimal) is a hybrid format. For our 8 bit number, we can store 0-255, so all values will have a hundreds, tens, and units column.
+    Within BCD, our 3 memory locations each store one of these columns, with I storing hundreds, I+1 tens, and I+2 units.
+
+    The maths to do this isn't as bad as you'd think:
+    1 - Take MOD 10 of value to get final digit
+    2 - Divide by 10 to remove final digit (integer types cause integer division)
+    3 - Repeat for next place
+    */
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    uint8_t value = registers[Vx];              // Store value of reg Vx
+    for (int place = 2; place >= 0; --place) {  // Iterate 2 to 0 (2, 1, 0)
+        memory[index + place] = value % 10;     // Store the final digit of the number in memory
+        value /= 10;                            // Divide the value by 10 to remove the final digit
+    }
+}
+
+// Fx55 -> LD I Vx: Load registers V0 to Vx into memory starting at index location
+
