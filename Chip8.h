@@ -61,6 +61,7 @@ class Chip8 {
         void OP_Fx29();                     // OPCODE Fx29 -> LD F Vx: Load memory address of first pixel of sprite of value of Vx (grammatical nightmare but hopefully makes sense)
         void OP_Fx33();                     // OPCODE Fx33 -> LD B Vx: Store the BCD (Binary Coded Decimal) value from Vx within addresses I, I+1, I+2
         void OP_Fx55();                     // OPCODE Fx55 -> LD I Vx: Store registers V0 to Vx in contiguous memory (starting at index reg location)
+        void OP_Fx65();                     // OPCODE Fx65 -> LD Vx I: Load contents from memory location (starting at index reg) into registers V0 to Vx
 };
 
 #endif

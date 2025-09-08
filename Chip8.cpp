@@ -440,4 +440,17 @@ void Chip8::OP_Fx33() {
 }
 
 // Fx55 -> LD I Vx: Load registers V0 to Vx into memory starting at index location
+void Chip8::OP_Fx55() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    for (uint8_t i = 0; i<= Vx; ++i) {          // Iterate i from 0 to Vx
+        memory[index + i] = registers[i];       // Store the contents of register at i in memory location index reg + 1
+    }
+}
 
+// Fx66 -> Ld Vx I: Load index reg onwards into registers V0 to Vx
+void Chip8::OP_Fx65() {
+    uint8_t Vx = (opcode & 0x0F00u) >> 8u;      // Extract Vx from opcode
+    for (uint8_t i = 0; i <= Vx; ++i) {         // Iterate i from 0 to Vx
+        registers[i] = memory[index + i];       // Store contents of memory i from index in register Vi
+    }
+}
