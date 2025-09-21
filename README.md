@@ -16,3 +16,8 @@ Tutoial can be found [here](https://austinmorlan.com/posts/chip8_emulator)
 ## Opcodes
 The full list of opcodes can be found [here](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM).
 Opcodes are briefly described in the header file `Chip8.h`, to help understand their meaning.
+
+## Function Pointer Table
+Right lets figure this thing out...
+We essentially make a big ol array, and use the provided opcode as an index. This means the array must be big enough for every possible opcode.
+The 1st dimension of the array must be able to accomodate up to $F indexes, and then other dimesnions are used to accomodate the next characters of the opcode.

@@ -27,6 +27,21 @@ class Chip8 {
         std::default_random_engine randGen;                 // Engine to generate a random number
         std::uniform_int_distribution<uint8_t> randByte;    // Used to store a byte of random data
 
+        // Define function pointer table
+        typedef void (Chip8::*Chip8Func)(); // Declares Chip8Func as a pointer to a void function with no params
+        Chip8Func table[0xF + 1];           // First dimension of the table, for all the first chars of opcodes
+        Chip8Func table0[0xE + 1];          // Dimension of array for opcodes starting 0
+    	Chip8Func table8[0xE + 1];          // Dimension of array for opcodes starting 8
+	    Chip8Func tableE[0xE + 1];          // Dimension of array for opcodes starting E
+	    Chip8Func tableF[0x65 + 1];         // Dimension of array for opcodes starting F
+
+        // Define functions for the other dimensions of the function pointer table (not confusing at all)
+        void Table0();                      // Function which figures out which opcode starting 0 is being referred to
+        void Table8();                      // Same as above, but for opcodes starting 8
+        void TableE();                      // Same as above, but for opcodes starting E
+        void TableF();                      // Same as above, but for opcodes starting F
+        void OP_NULL();                     // Deals with any situation where the opcode is not recognised
+
         // Opcodes
         void OP_00E0();                     // OPCODE 00E0 -> CLS: Clears the display
         void OP_00EE();                     // OPCODE 00EE -> RET: Return from a subroutine
