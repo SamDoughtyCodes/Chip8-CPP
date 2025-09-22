@@ -80,6 +80,30 @@ Chip8::Chip8()
     }
 }
 
+/* - FUNCTIONS FOR ACCESSING DIMENSIONS OF FUNCTION POINTER TABLE - */
+void Chip8::Table0() {
+    // this is a pointer to the current object, so *this dereferences the pointer (access the actual object)
+    // *(table0[index]) is a pointer to a function pointer, so actually is just the function to be called (because yes)
+    // so together (*this).*(table0[index]) references the function that needs to be called, so the final () actually calls the function
+    ((*this).*(table0[opcode & 0x000Fu]))();
+}
+
+void Chip8::Table8() {
+    // See Chip8::Table0 for syntax explanation
+    ((*this).*(table8[opcode & 0x000Fu]))();
+}
+
+void Chip8::TableE() {
+    // See Chip8::Table0 for syntax explanation
+    ((*this).*(tableE[opcode & 0x000Fu]))();
+}
+
+void Chip8::TableF() {
+    // See Chip8::Table0 for syntax explanation
+    ((*this).*(tableF[opcode & 0x00FFu]))();
+}
+
+
 /* ----------------- FUNCTION TO LOAD A ROM FILE ----------------- */
 void Chip8::LoadROM(char const* filename) {
     // Open binary file and move pointer to end
@@ -512,3 +536,6 @@ void Chip8::OP_Fx65() {
         registers[i] = memory[index + i];       // Store contents of memory i from index in register Vi
     }
 }
+
+// NULL -> Used to handle incorrect opcodes
+void Chip8::OP_NULL() {}                        // Empty function to deal with any invalid opcode calls
