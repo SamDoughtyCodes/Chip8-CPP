@@ -11,6 +11,7 @@ class Platform {
 
         // Methods
     	Platform(char const* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight);
+        ~Platform();  // Destructor
         
 };
 
