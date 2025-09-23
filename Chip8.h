@@ -21,6 +21,7 @@ class Chip8 {
         // Methods
         Chip8();                            // Constructor
         void LoadROM(char const* filename); // Method to load a ROM file
+        void Cycle();                       // FDE Cycle func
 
     private:
         // Attributes

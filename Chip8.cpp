@@ -103,6 +103,20 @@ void Chip8::TableF() {
     ((*this).*(tableF[opcode & 0x00FFu]))();
 }
 
+/* ------------------------- FDE CYCLE --------------------------- */
+void Chip8::Cycle() {
+    // Fetch instruction
+    opcode = (memory[pc] << 8u) | memory[pc+1];  // The opcode is the 4 bits stored at the address in the PC, alongside the next address contents (combined using OR)
+
+    // Increment the program counter by 2 (to get to next instruction)
+    pc += 2;
+
+    // Decode and Execute
+    ((*this).*(table[(opcode & 0xF000u) >> 12u]))();  // Finds the relevent function and calls it from the function pointer table (See Chip8::Table0 for syntax explanation)
+
+    if (delayTimer > 0) {--delayTimer;}  // Decrement delay timer if it has a value
+    if (soundTimer > 0) {--soundTimer;}  // Decrement sound timer if it has a value
+}
 
 /* ----------------- FUNCTION TO LOAD A ROM FILE ----------------- */
 void Chip8::LoadROM(char const* filename) {
