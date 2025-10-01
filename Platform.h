@@ -12,6 +12,8 @@ class Platform {
         // Methods
     	Platform(char const* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight);
         ~Platform();  // Destructor
+        void Update(void const* buffer, int pitch);  // Update the display
+        bool ProcessInput(uint8_t* keys);  // You guessed it, process some input!
         
 };
 
