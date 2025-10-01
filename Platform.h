@@ -14,7 +14,6 @@ class Platform {
         ~Platform();  // Destructor
         void Update(void const* buffer, int pitch);  // Update the display
         bool ProcessInput(uint8_t* keys);  // You guessed it, process some input!
-        
 };
 
 #endif
