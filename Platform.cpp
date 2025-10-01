@@ -123,8 +123,89 @@ bool Platform::ProcessInput(uint8_t* keys) {
             } break;
 
             case SDL_EVENT_KEY_UP: {
+                switch (event.key.key) {
+                    case SDLK_X:
+                    {
+                        keys[0] = 0;
+                    } break;
 
-            }
+                    case SDLK_1:
+                    {
+                        keys[1] = 0;
+                    } break;
+
+                    case SDLK_2:
+                    {
+                        keys[2] = 0;
+                    } break;
+
+                    case SDLK_3:
+                    {
+                        keys[3] = 0;
+                    } break;
+
+                    case SDLK_Q:
+                    {
+                        keys[4] = 0;
+                    } break;
+
+                    case SDLK_W:
+                    {
+                        keys[5] = 0;
+                    } break;
+
+                    case SDLK_E:
+                    {
+                        keys[6] = 0;
+                    } break;
+
+                    case SDLK_A:
+                    {
+                        keys[7] = 0;
+                    } break;
+
+                    case SDLK_S:
+                    {
+                        keys[8] = 0;
+                    } break;
+
+                    case SDLK_D:
+                    {
+                        keys[9] = 0;
+                    } break;
+
+                    case SDLK_Z:
+                    {
+                        keys[0xA] = 0;
+                    } break;
+
+                    case SDLK_C:
+                    {
+                        keys[0xB] = 0;
+                    } break;
+
+                    case SDLK_4:
+                    {
+                        keys[0xC] = 0;
+                    } break;
+
+                    case SDLK_R:
+                    {
+                        keys[0xD] = 0;
+                    } break;
+
+                    case SDLK_F:
+                    {
+                        keys[0xE] = 0;
+                    } break;
+
+                    case SDLK_V:
+                    {
+                        keys[0xF] = 0;
+                    } break;
+                }
+            } break;
         }
     }
+    return quit;  // Return if the program should be quit or not
 }
